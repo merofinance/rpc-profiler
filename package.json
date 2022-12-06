@@ -1,0 +1,33 @@
+{
+  "name": "rpc-profiler",
+  "version": "1.0.0",
+  "description": "A tool to profile RPC Endpoints",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/merofinance/rpc-profiler.git"
+  },
+  "keywords": [
+    "rpc",
+    "endpoint",
+    "profiler",
+    "profiling",
+    "infura",
+    "alchemy",
+    "llamanodes",
+    "llama-nodes"
+  ],
+  "author": "Mero Finance",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/merofinance/rpc-profiler/issues"
+  },
+  "homepage": "https://github.com/merofinance/rpc-profiler#readme",
+  "dependencies": {
+    "ethers": "^5.7.2"
+  }
+}
