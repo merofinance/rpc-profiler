@@ -5,8 +5,17 @@ const INFURA_URL = `https://mainnet.infura.io/v3/${INFURA_KEY}`;
 const LLAMA_NODES_URL = `https://eth.llamarpc.com/rpc/${LLAMA_NODES_KEY}`;
 
 const RUN_TIME = 5 * 60 * 1000; // 5 minutes
+const CONCURRENT_REQUESTS = 1000; // 1,000
 
 const ethers = require("ethers");
+
+const getContract = (providerUrl) => {
+  const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+  const contractAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+  const BALANCE = "function balanceOf(address owner) view returns (uint256)";
+  const contractAbi = [BALANCE];
+  return new ethers.Contract(contractAddress, contractAbi, provider);
+};
 
 const canGetbalance = async (contract) => {
   try {
@@ -21,11 +30,7 @@ const canGetbalance = async (contract) => {
 };
 
 const testSpeed = async (providerUrl) => {
-  const provider = new ethers.providers.JsonRpcProvider(providerUrl);
-  const contractAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-  const BALANCE = "function balanceOf(address owner) view returns (uint256)";
-  const contractAbi = [BALANCE];
-  const contract = new ethers.Contract(contractAddress, contractAbi, provider);
+  const contract = getContract(providerUrl);
   let testing = true;
 
   setTimeout(() => {
@@ -42,14 +47,40 @@ const testSpeed = async (providerUrl) => {
   return { successCount, errorCount };
 };
 
+const testConcurrentRequests = async (providerUrl) => {
+  const startTime = Date.now();
+  const contract = getContract(providerUrl);
+  const requests = Array.from({ length: CONCURRENT_REQUESTS }, () =>
+    canGetbalance(contract)
+  );
+  const results = await Promise.all(requests);
+  const successCount = results.filter((result) => result).length;
+  const errorCount = results.filter((result) => !result).length;
+  const endTime = Date.now();
+  const timeElapsed = endTime - startTime;
+  return { successCount, errorCount, timeElapsed: `${timeElapsed / 1000}s` };
+};
+
 (async function main() {
+  // Speed tests
   testSpeed(ALCHEMY_URL).then((result) => {
-    console.log("Alchemy", result);
+    console.log("Alchemy Speed: ", result);
   });
   testSpeed(INFURA_URL).then((result) => {
-    console.log("Infura", result);
+    console.log("Infura Speed: ", result);
   });
   testSpeed(LLAMA_NODES_URL).then((result) => {
-    console.log("Llama Nodes", result);
+    console.log("Llama Nodes Speed: ", result);
+  });
+
+  // Concurrent requests tests
+  testConcurrentRequests(ALCHEMY_URL).then((result) => {
+    console.log("Alchemy Concurrent Requests: ", result);
+  });
+  testConcurrentRequests(INFURA_URL).then((result) => {
+    console.log("Infura Concurrent Requests: ", result);
+  });
+  testConcurrentRequests(LLAMA_NODES_URL).then((result) => {
+    console.log("Llama Nodes Concurrent Requests: ", result);
   });
 })();
