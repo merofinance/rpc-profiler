@@ -1,4 +1,4 @@
-# rpc-profiler
+# RPC Profiler
 
 A tool to profile RPC Endpoints
 
