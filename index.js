@@ -24,7 +24,6 @@ const canGetbalance = async (contract) => {
     const balanceInUsd = ethers.utils.formatUnits(balance, 6);
     return balanceInUsd > 0;
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
@@ -62,16 +61,16 @@ const testConcurrentRequests = async (providerUrl) => {
 };
 
 (async function main() {
-  // Speed tests
-  testSpeed(ALCHEMY_URL).then((result) => {
-    console.log("Alchemy Speed: ", result);
-  });
-  testSpeed(INFURA_URL).then((result) => {
-    console.log("Infura Speed: ", result);
-  });
-  testSpeed(LLAMA_NODES_URL).then((result) => {
-    console.log("Llama Nodes Speed: ", result);
-  });
+  //   // Speed tests
+  //   testSpeed(ALCHEMY_URL).then((result) => {
+  //     console.log("Alchemy Speed: ", result);
+  //   });
+  //   testSpeed(INFURA_URL).then((result) => {
+  //     console.log("Infura Speed: ", result);
+  //   });
+  //   testSpeed(LLAMA_NODES_URL).then((result) => {
+  //     console.log("Llama Nodes Speed: ", result);
+  //   });
 
   // Concurrent requests tests
   testConcurrentRequests(ALCHEMY_URL).then((result) => {
