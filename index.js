@@ -1,9 +1,10 @@
-const { ALCHEMY_KEY, INFURA_KEY, CHAINSTACK_ENDPOINT, LLAMA_NODES_KEY } = require("./secrets");
+const { ALCHEMY_KEY, INFURA_KEY, CHAINSTACK_ENDPOINT, LLAMA_NODES_KEY, TENDERLY_KEY } = require("./secrets");
 
 const ALCHEMY_URL = `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
 const INFURA_URL = `https://mainnet.infura.io/v3/${INFURA_KEY}`;
 const CHAINSTACK_URL = `${CHAINSTACK_ENDPOINT}`;
 const LLAMA_NODES_URL = `https://eth.llamarpc.com/rpc/${LLAMA_NODES_KEY}`;
+const TENDERLY_URL = `https://mainnet.gateway.tenderly.co/${TENDERLY_KEY}`
 
 const RUN_TIME = 5 * 60 * 1000; // 5 minutes
 const CONCURRENT_REQUESTS = 1000; // 1,000
@@ -75,6 +76,9 @@ const testConcurrentRequests = async (providerUrl) => {
   //   testSpeed(LLAMA_NODES_URL).then((result) => {
   //     console.log("Llama Nodes Speed: ", result);
   //   });
+  //   testSpeed(TENDERLY_URL).then((result) => {
+  //     console.log("Tenderly Web3 Gateway Speed: ", result);
+  //   });
 
   // Concurrent requests tests
   testConcurrentRequests(ALCHEMY_URL).then((result) => {
@@ -88,5 +92,8 @@ const testConcurrentRequests = async (providerUrl) => {
   });
   testConcurrentRequests(LLAMA_NODES_URL).then((result) => {
     console.log("Llama Nodes Concurrent Requests: ", result);
+  });
+  testConcurrentRequests(TENDERLY_URL).then((result) => {
+    console.log("Tenderly Web3 Gateway Concurrent Requests: ", result);
   });
 })();
