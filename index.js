@@ -1,10 +1,11 @@
-const { ALCHEMY_KEY, INFURA_KEY, CHAINSTACK_ENDPOINT, LLAMA_NODES_KEY, TENDERLY_KEY } = require("./secrets");
+const { ALCHEMY_KEY, INFURA_KEY, CHAINSTACK_ENDPOINT, LLAMA_NODES_KEY, TENDERLY_KEY, QUICKNODE_ENDPOINT } = require("./secrets");
 
 const ALCHEMY_URL = `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
 const INFURA_URL = `https://mainnet.infura.io/v3/${INFURA_KEY}`;
 const CHAINSTACK_URL = `${CHAINSTACK_ENDPOINT}`;
 const LLAMA_NODES_URL = `https://eth.llamarpc.com/rpc/${LLAMA_NODES_KEY}`;
 const TENDERLY_URL = `https://mainnet.gateway.tenderly.co/${TENDERLY_KEY}`
+const QUICKNODE_URL = `${QUICKNODE_ENDPOINT}`;
 
 const RUN_TIME = 5 * 60 * 1000; // 5 minutes
 const CONCURRENT_REQUESTS = 1000; // 1,000
@@ -64,36 +65,42 @@ const testConcurrentRequests = async (providerUrl) => {
 
 (async function main() {
   //   // Speed tests
-  //   testSpeed(ALCHEMY_URL).then((result) => {
+  //   await testSpeed(ALCHEMY_URL).then((result) => {
   //     console.log("Alchemy Speed: ", result);
   //   });
-  //   testSpeed(INFURA_URL).then((result) => {
+  //   await testSpeed(INFURA_URL).then((result) => {
   //     console.log("Infura Speed: ", result);
   //   });
-  //   testSpeed(CHAINSTACK_URL).then((result) => {
+  //   await testSpeed(CHAINSTACK_URL).then((result) => {
   //     console.log("Chainstack Speed: ", result);
   //   });
-  //   testSpeed(LLAMA_NODES_URL).then((result) => {
+  //   await testSpeed(LLAMA_NODES_URL).then((result) => {
   //     console.log("Llama Nodes Speed: ", result);
   //   });
-  //   testSpeed(TENDERLY_URL).then((result) => {
+  //   await testSpeed(TENDERLY_URL).then((result) => {
   //     console.log("Tenderly Web3 Gateway Speed: ", result);
+  //   });
+  //   await testSpeed(QUICKNODE_URL).then((result) => {
+  //     console.log("QuickNode Speed: ", result);
   //   });
 
   // Concurrent requests tests
-  testConcurrentRequests(ALCHEMY_URL).then((result) => {
+  await testConcurrentRequests(ALCHEMY_URL).then((result) => {
     console.log("Alchemy Concurrent Requests: ", result);
   });
-  testConcurrentRequests(INFURA_URL).then((result) => {
+  await testConcurrentRequests(INFURA_URL).then((result) => {
     console.log("Infura Concurrent Requests: ", result);
   });
-  testConcurrentRequests(CHAINSTACK_URL).then((result) => {
+  await testConcurrentRequests(CHAINSTACK_URL).then((result) => {
     console.log("Chainstack Concurrent Requests: ", result);
   });
-  testConcurrentRequests(LLAMA_NODES_URL).then((result) => {
+  await testConcurrentRequests(LLAMA_NODES_URL).then((result) => {
     console.log("Llama Nodes Concurrent Requests: ", result);
   });
-  testConcurrentRequests(TENDERLY_URL).then((result) => {
+  await testConcurrentRequests(TENDERLY_URL).then((result) => {
     console.log("Tenderly Web3 Gateway Concurrent Requests: ", result);
+  });
+  await testConcurrentRequests(QUICKNODE_URL).then((result) => {
+    console.log("QuickNode Concurrent Requests: ", result);
   });
 })();
