@@ -1,28 +1,37 @@
-const { ALCHEMY_KEY, INFURA_KEY, CHAINSTACK_ENDPOINT, LLAMA_NODES_KEY, TENDERLY_KEY, QUICKNODE_ENDPOINT } = require("./secrets");
+const {
+  ALCHEMY_KEY,
+  INFURA_KEY,
+  CHAINSTACK_ENDPOINT,
+  LLAMA_NODES_KEY,
+  TENDERLY_KEY,
+  QUICKNODE_ENDPOINT,
+} = require('./secrets');
 
 const ALCHEMY_URL = `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
 const INFURA_URL = `https://mainnet.infura.io/v3/${INFURA_KEY}`;
 const CHAINSTACK_URL = `${CHAINSTACK_ENDPOINT}`;
 const LLAMA_NODES_URL = `https://eth.llamarpc.com/rpc/${LLAMA_NODES_KEY}`;
-const TENDERLY_URL = `https://mainnet.gateway.tenderly.co/${TENDERLY_KEY}`
+const TENDERLY_URL = `https://mainnet.gateway.tenderly.co/${TENDERLY_KEY}`;
 const QUICKNODE_URL = `${QUICKNODE_ENDPOINT}`;
 
 const RUN_TIME = 5 * 60 * 1000; // 5 minutes
 const CONCURRENT_REQUESTS = 1000; // 1,000
+const CONCURRENT_REQUESTS_ROUND = 100;
+const ROUNDS = 10;
 
-const ethers = require("ethers");
+const ethers = require('ethers');
 
 const getContract = (providerUrl) => {
   const provider = new ethers.providers.JsonRpcProvider(providerUrl);
-  const contractAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-  const BALANCE = "function balanceOf(address owner) view returns (uint256)";
+  const contractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+  const BALANCE = 'function balanceOf(address owner) view returns (uint256)';
   const contractAbi = [BALANCE];
   return new ethers.Contract(contractAddress, contractAbi, provider);
 };
 
 const canGetbalance = async (contract) => {
   try {
-    const USER_ADDRESS = "0x477b8D5eF7C2C42DB84deB555419cd817c336b6F";
+    const USER_ADDRESS = '0x477b8D5eF7C2C42DB84deB555419cd817c336b6F';
     const balance = await contract.balanceOf(USER_ADDRESS);
     const balanceInUsd = ethers.utils.formatUnits(balance, 6);
     return balanceInUsd > 0;
@@ -49,10 +58,10 @@ const testSpeed = async (providerUrl) => {
   return { successCount, errorCount };
 };
 
-const testConcurrentRequests = async (providerUrl) => {
+const testConcurrentRequests = async (providerUrl, noOfRequests) => {
   const startTime = Date.now();
   const contract = getContract(providerUrl);
-  const requests = Array.from({ length: CONCURRENT_REQUESTS }, () =>
+  const requests = Array.from({ length: noOfRequests }, () =>
     canGetbalance(contract)
   );
   const results = await Promise.all(requests);
@@ -64,43 +73,96 @@ const testConcurrentRequests = async (providerUrl) => {
 };
 
 (async function main() {
-  //   // Speed tests
-  //   await testSpeed(ALCHEMY_URL).then((result) => {
-  //     console.log("Alchemy Speed: ", result);
-  //   });
-  //   await testSpeed(INFURA_URL).then((result) => {
-  //     console.log("Infura Speed: ", result);
-  //   });
-  //   await testSpeed(CHAINSTACK_URL).then((result) => {
-  //     console.log("Chainstack Speed: ", result);
-  //   });
-  //   await testSpeed(LLAMA_NODES_URL).then((result) => {
-  //     console.log("Llama Nodes Speed: ", result);
-  //   });
-  //   await testSpeed(TENDERLY_URL).then((result) => {
-  //     console.log("Tenderly Web3 Gateway Speed: ", result);
-  //   });
-  //   await testSpeed(QUICKNODE_URL).then((result) => {
-  //     console.log("QuickNode Speed: ", result);
-  //   });
+  // // Speed tests
+  // await testSpeed(ALCHEMY_URL).then((result) => {
+  //   console.log('Alchemy Speed: ', result);
+  // });
+  // await testSpeed(INFURA_URL).then((result) => {
+  //   console.log('Infura Speed: ', result);
+  // });
+  // await testSpeed(CHAINSTACK_URL).then((result) => {
+  //   console.log('Chainstack Speed: ', result);
+  // });
+  // await testSpeed(LLAMA_NODES_URL).then((result) => {
+  //   console.log('Llama Nodes Speed: ', result);
+  // });
+  // await testSpeed(TENDERLY_URL).then((result) => {
+  //   console.log('Tenderly Web3 Gateway Speed: ', result);
+  // });
+  // await testSpeed(QUICKNODE_URL).then((result) => {
+  //   console.log('QuickNode Speed: ', result);
+  // });
 
-  // Concurrent requests tests
-  await testConcurrentRequests(ALCHEMY_URL).then((result) => {
-    console.log("Alchemy Concurrent Requests: ", result);
-  });
-  await testConcurrentRequests(INFURA_URL).then((result) => {
-    console.log("Infura Concurrent Requests: ", result);
-  });
-  await testConcurrentRequests(CHAINSTACK_URL).then((result) => {
-    console.log("Chainstack Concurrent Requests: ", result);
-  });
-  await testConcurrentRequests(LLAMA_NODES_URL).then((result) => {
-    console.log("Llama Nodes Concurrent Requests: ", result);
-  });
-  await testConcurrentRequests(TENDERLY_URL).then((result) => {
-    console.log("Tenderly Web3 Gateway Concurrent Requests: ", result);
-  });
-  await testConcurrentRequests(QUICKNODE_URL).then((result) => {
-    console.log("QuickNode Concurrent Requests: ", result);
-  });
+  // // Concurrent requests tests
+  // await testConcurrentRequests(ALCHEMY_URL, CONCURRENT_REQUESTS).then(
+  //   (result) => {
+  //     console.log('Alchemy Concurrent Requests: ', result);
+  //   }
+  // );
+  // await testConcurrentRequests(INFURA_URL, CONCURRENT_REQUESTS).then(
+  //   (result) => {
+  //     console.log('Infura Concurrent Requests: ', result);
+  //   }
+  // );
+  // await testConcurrentRequests(CHAINSTACK_URL, CONCURRENT_REQUESTS).then(
+  //   (result) => {
+  //     console.log('Chainstack Concurrent Requests: ', result);
+  //   }
+  // );
+  // await testConcurrentRequests(LLAMA_NODES_URL, CONCURRENT_REQUESTS).then(
+  //   (result) => {
+  //     console.log('Llama Nodes Concurrent Requests: ', result);
+  //   }
+  // );
+  // await testConcurrentRequests(TENDERLY_URL, CONCURRENT_REQUESTS).then(
+  //   (result) => {
+  //     console.log('Tenderly Web3 Gateway Concurrent Requests: ', result);
+  //   }
+  // );
+  // await testConcurrentRequests(QUICKNODE_URL, CONCURRENT_REQUESTS).then(
+  //   (result) => {
+  //     console.log('QuickNode Concurrent Requests: ', result);
+  //   }
+  // );
+
+  // Concurrent requests round tests
+  for (let i = 1; i <= ROUNDS; i++) {
+    await testConcurrentRequests(ALCHEMY_URL, CONCURRENT_REQUESTS_ROUND).then(
+      (result) => {
+        console.log('Round', i, 'Alchemy Concurrent Requests: ', result);
+      }
+    );
+    await testConcurrentRequests(INFURA_URL, CONCURRENT_REQUESTS_ROUND).then(
+      (result) => {
+        console.log('Round', i, 'Infura Concurrent Requests: ', result);
+      }
+    );
+    await testConcurrentRequests(
+      CHAINSTACK_URL,
+      CONCURRENT_REQUESTS_ROUND
+    ).then((result) => {
+      console.log('Round', i, 'Chainstack Concurrent Requests: ', result);
+    });
+    await testConcurrentRequests(
+      LLAMA_NODES_URL,
+      CONCURRENT_REQUESTS_ROUND
+    ).then((result) => {
+      console.log('Round', i, 'Llama Nodes Concurrent Requests: ', result);
+    });
+    await testConcurrentRequests(TENDERLY_URL, CONCURRENT_REQUESTS_ROUND).then(
+      (result) => {
+        console.log(
+          'Round',
+          i,
+          'Tenderly Web3 Gateway Concurrent Requests: ',
+          result
+        );
+      }
+    );
+    await testConcurrentRequests(QUICKNODE_URL, CONCURRENT_REQUESTS_ROUND).then(
+      (result) => {
+        console.log('Round', i, 'QuickNode Concurrent Requests: ', result);
+      }
+    );
+  }
 })();
