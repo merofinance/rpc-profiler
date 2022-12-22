@@ -1,7 +1,8 @@
-const { ALCHEMY_KEY, INFURA_KEY, LLAMA_NODES_KEY } = require("./secrets");
+const { ALCHEMY_KEY, INFURA_KEY, CHAINSTACK_ENDPOINT, LLAMA_NODES_KEY } = require("./secrets");
 
 const ALCHEMY_URL = `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
 const INFURA_URL = `https://mainnet.infura.io/v3/${INFURA_KEY}`;
+const CHAINSTACK_URL = `${CHAINSTACK_ENDPOINT}`;
 const LLAMA_NODES_URL = `https://eth.llamarpc.com/rpc/${LLAMA_NODES_KEY}`;
 
 const RUN_TIME = 5 * 60 * 1000; // 5 minutes
@@ -68,6 +69,9 @@ const testConcurrentRequests = async (providerUrl) => {
   //   testSpeed(INFURA_URL).then((result) => {
   //     console.log("Infura Speed: ", result);
   //   });
+  //   testSpeed(CHAINSTACK_URL).then((result) => {
+  //     console.log("Chainstack Speed: ", result);
+  //   });
   //   testSpeed(LLAMA_NODES_URL).then((result) => {
   //     console.log("Llama Nodes Speed: ", result);
   //   });
@@ -78,6 +82,9 @@ const testConcurrentRequests = async (providerUrl) => {
   });
   testConcurrentRequests(INFURA_URL).then((result) => {
     console.log("Infura Concurrent Requests: ", result);
+  });
+  testConcurrentRequests(CHAINSTACK_URL).then((result) => {
+    console.log("Chainstack Concurrent Requests: ", result);
   });
   testConcurrentRequests(LLAMA_NODES_URL).then((result) => {
     console.log("Llama Nodes Concurrent Requests: ", result);
